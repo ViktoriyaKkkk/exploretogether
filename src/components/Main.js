@@ -145,6 +145,7 @@ const Main = observer(() => {
 
 	chats?.forEach((item)=>{
 		userStore.socket.emit('join_room', item._id)
+		console.log('joined ', item._id)
 	})
 
 	const location = useLocation()
