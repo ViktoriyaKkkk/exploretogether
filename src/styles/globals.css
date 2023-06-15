@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html, body {
+        font-family: Garamond, system-ui, sans-serif;
+    }
+
+    /*body,*/
+    /*textarea {*/
+    /*    !*@apply scrollbar-thumb-[rebeccapurple] scrollbar-track-[cornflowerblue];*!*/
+    /*    scrollbar-color: black red;*/
+    /*}*/
+    /**::-webkit-scrollbar-track {*/
+    /*    !*@apply scrollbar-thumb-[rebeccapurple];*!*/
+    /*    @apply bg-[black];*/
+    /*}*/
+
+    /**::-webkit-scrollbar-thumb {*/
+    /*    !*@apply scrollbar-track-[cornflowerblue];*!*/
+    /*    @apply bg-[red];*/
+    /*}*/
+}
+/*// adding background to track*/
+/*   .scrollbar-thumb-dark-gray::-webkit-scrollbar-track {*/
+/*       @apply bg-black*/
+/*   }*/
+
+/*// styling scrollbar thumb*!*!*/
+/*   .scrollbar-thumb-dark-gray::-webkit-scrollbar-thumb {*/
+/*       @apply bg-gray*/
+
+/*   }*/

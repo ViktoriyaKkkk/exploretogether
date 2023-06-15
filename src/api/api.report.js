@@ -1,0 +1,26 @@
+import { $authHost, $host } from './api.interceptor'
+import jwtDecode from 'jwt-decode'
+
+export const readReports = async () => {
+	try {
+		const { data } = await $authHost.get('/report')
+		return data
+	} catch (e) {
+		return e
+	}
+}
+
+export const createReports = async (sender, offender, reportText, processed) => {
+	const { data } = await $authHost.post('/report', {sender, offender, reportText, processed})
+	return data
+}
+
+export const updateReports= async (id,processed) => {
+	const { data } = await $authHost.put('/report', {id, processed})
+	return data
+}
+
+export const deleteReports = async (id) => {
+	const { data } = await $authHost.delete(`/report/${id}`)
+	return data
+}
