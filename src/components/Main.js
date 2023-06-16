@@ -143,10 +143,10 @@ const Main = observer(() => {
 		return res
 	}), [searches, userStore])
 
-	chats?.forEach((item)=>{
+	useEffect(()=>chats?.forEach((item)=>{
 		userStore.socket.emit('join_room', item._id)
 		console.log('joined ', item._id)
-	})
+	}),[chats,userStore])
 
 	const location = useLocation()
 	useEffect(() => {
