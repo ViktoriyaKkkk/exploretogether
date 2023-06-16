@@ -67,9 +67,9 @@ const StartForm = observer(() => {
 			<div className="flex pt-14 flex-col h-screen bg-[url('../../public/img/background.jpg')] bg-cover bg-center">
 				<div className='grid place-items-center mx-2 my-auto'>
 
-					<div className='ring-red ring-8 ring-opacity-50 w-11/12 p-12 sm:w-8/12 md:w-6/12 lg:w-5/12 xl:w-4/12 2xl:w-3/12
+					<div className='ring-light-green ring-8 ring-opacity-50 w-11/12 p-12 sm:w-8/12 md:w-6/12 lg:w-5/12 xl:w-4/12 2xl:w-3/12
             px-6 py-10 sm:px-10 sm:py-6
-            bg-opacity-90 bg-black rounded-lg'>
+            bg-opacity-90 bg-black rounded-lg shadow-md lg:shadow-lg shadow-light-green shadow-2xl'>
 						<h2 className='block text-center font-bold text-2xl lg:text-2xl text-white'>
 							{userStore._isLogin ? 'Вход' : 'Регистрация'}
 						</h2>
