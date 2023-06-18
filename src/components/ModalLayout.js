@@ -12,7 +12,7 @@ const ModalLayout = observer(({admin, func, children }) => {
 		<div id='staticModal' data-modal-backdrop='static' tabIndex='-1' aria-hidden='true'
 				 className={clsx('fixed flex flex-wrap place-content-center justify-center right-0 z-50 w-full pt-16 overflow-x-hidden overflow-y-auto ' +
 					 'md:inset-0 h-[calc(100%-1rem)] max-h-full', AdminInstance._isModal && 'hidden', admin && 'pl-40')}>
-			<div className='relative w-4/5 md:w-2/5 max-w-2xl max-h-full'>
+			<div className='relative w-4/5 md:w-1/3 max-w-2xl max-h-full'>
 
 				<div className={clsx('relative rounded-lg bg-black shadow shadow-md drop-shadow-[0_0_35px_rgba(64,147,107,0.9)]')}>
 

@@ -26,6 +26,8 @@ import Profile from '../components/Profile'
 import { useValidation } from '../utils/useValidation'
 import io from 'socket.io-client'
 import * as mobx from 'mobx'
+import Toast from '../components/Toast'
+import { Toaster } from 'react-hot-toast'
 
 
 const MySearch = observer(() => {
@@ -40,6 +42,7 @@ const MySearch = observer(() => {
 	})
 
 	const [searches, err, load] = useSearch()
+	searches.reverse()
 	const ownersSearches = useMemo(() => searches?.filter(search => {
 		return search.owner === userStore._user.id
 	}), [searches, userStore])
@@ -118,7 +121,7 @@ const MySearch = observer(() => {
 		}, {})
 	}, [ages])
 
-	const [users, error] = useUsers()
+	const [users] = useUsers()
 	const usersById = useMemo(() => {
 		return users?.reduce((prev, curr) => {
 			return { ...prev, [curr._id]: curr }
@@ -130,8 +133,8 @@ const MySearch = observer(() => {
 	const [bluredReport, setBluredReport] = useState(false)
 
 	// console.log(searches)
-	if (Object.keys(levelsById).length === 0 || Object.keys(sectionsById).length === 0 || Object.keys(topicsById).length === 0 ||
-		Object.keys(usersById).length === 0 || searches === []) {
+	if (searches.length === 0 || Object.keys(levelsById).length === 0 || Object.keys(sectionsById).length === 0
+		|| Object.keys(topicsById).length === 0 || Object.keys(usersById).length === 0) {
 		// console.log('done')
 		return <Layout>
 			<div className='absolute w-full -z-20 h-full bg-black'>
@@ -140,10 +143,21 @@ const MySearch = observer(() => {
 				className="absolute w-full -z-10 h-full [mask-image:linear-gradient(0deg,black,transparent)] bg-repeat bg-[url('../../public/img/bggrid2.svg')] ">
 			</div>
 		</Layout>
+	} else if (ownersSearches.length === 0 && participantsSearches.length === 0) {
+		return <Layout>
+			<div className='absolute w-full -z-20 h-full bg-black'>
+			</div>
+			<div
+				className="absolute w-full -z-10 h-full [mask-image:linear-gradient(0deg,black,transparent)] bg-repeat bg-[url('../../public/img/bggrid2.svg')] ">
+			</div>
+			<div className='flex h-screen place-content-center'>
+				<h2 className='my-auto mx-5 text-3xl text-light-gray text-center font-bold'>У вас пока нет поисковых запросов</h2>
+			</div>
+		</Layout>
 	}
 	return (
 		<Layout>
-
+			<Toaster />
 			{/*Вывод информации о пользователе*/}
 
 			{
@@ -182,7 +196,7 @@ const MySearch = observer(() => {
 
 			<ModalLayout admin={false} func={() => {
 				createReports(userStore.user.id, userStore.isReading._id, reportText).then(r => console.log(r))
-				alert(`Вы пожаловались на пользователя ${userStore.isReading.name}`)
+				Toast('ok', 'Внимание!', `Вы пожаловались на пользователя ${userStore.isReading.name}`)
 			}}>
 				<div className='relative flex items-start justify-center p-4 border-b border-gray rounded-t'>
 					<h3 className='mr-7 font-semibold text-white place-self-center'>
@@ -232,9 +246,8 @@ const MySearch = observer(() => {
 			<div
 				className='min-h-screen pt-12 flex flex-col'>
 				{
-					ownersSearches.length !== 0 ?
-						<h2 className='mt-5 mb-2 text-3xl text-white text-center font-bold'>Ваши поисковые запросы</h2> :
-						<h2 className='my-auto text-3xl text-light-gray text-center font-bold'>У вас пока нет поисковых запросов</h2>
+					ownersSearches.length !== 0 &&
+					<h2 className='mt-5 mx-5 mb-2 text-3xl text-white text-center font-bold'>Ваши поисковые запросы</h2>
 				}
 
 				<div
@@ -290,7 +303,8 @@ const MySearch = observer(() => {
 									<button onClick={() => {
 										updateSearches(item._id, !item.marker).then(r => {
 											load()
-											item.marker ? alert(`Вы закрыли набор участников для запроса ${item.name}`) : alert(`Вы возобновили набор участников для запроса ${item.name}`)
+											item.marker ? Toast('ok', 'Внимание!', `Вы закрыли набор участников для запроса ${item.name}`) :
+												Toast('ok', 'Внимание!', `Вы возобновили набор участников для запроса ${item.name}`)
 										})
 									}}
 													className='my-3 w-full place-self-center px-3 disabled:cursor-not-allowed py-2 leading-5 text-white transition-colors duration-200 transform bg-dark-green rounded-md
@@ -318,7 +332,8 @@ const MySearch = observer(() => {
 				{/*Запросы, где пользователь участник*/}
 				{
 					participantsSearches.length !== 0 && <>
-						<h2 className='mt-10 mb-2 text-3xl text-white text-center font-bold'>Поисковые запросы где вы - участник</h2>
+						<h2 className='mt-10 mb-2 mx-10 text-3xl text-white text-center font-bold'>Поисковые запросы где вы -
+							участник</h2>
 						<div
 							className={'flex flex-wrap mt-4  3xl:w-3/5 w-4/5 my-5 place-self-center text-white place-content-center'}>
 							{
@@ -369,18 +384,6 @@ const MySearch = observer(() => {
 											</div>
 										</div>
 										<div className={'flex flex-col place-content-around'}>
-											<button onClick={() => {
-												updateSearches(item._id, !item.marker).then(r => {
-													load()
-													item.marker ? alert(`Вы закрыли набор участников для запроса "${item.name}"`) : alert(`Вы возобновили набор участников для запроса "${item.name}"`)
-												})
-											}}
-															className='px-6 disabled:cursor-not-allowed my-5 py-2 leading-5 text-white transition-colors duration-200 transform bg-dark-green rounded-md
-							hover:bg-light-green focus:outline-none'
-															data-modal-target='staticModal' data-modal-toggle='staticModal'>{
-												item.marker ? 'Завершить поиск' : 'Возобновить поиск'
-											}
-											</button>
 											<button onClick={() => {
 												// socket.emit('join_room', item._id)
 												navigate(`/dialogs/${item._id}`)

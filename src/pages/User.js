@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { useNavigate } from 'react-router-dom'
 import { useAppContext } from '../context/AppContext'
@@ -17,6 +17,7 @@ import { RiDeleteBin5Line } from 'react-icons/ri'
 import { useUsers } from '../utils/useUsers'
 import { deleteUsers, updateUsers } from '../api/api.user'
 import UpdateUser from '../components/UpdateUser'
+import { Pagination } from '../components/Pagination'
 
 const User = observer(() => {
 
@@ -35,6 +36,17 @@ const User = observer(() => {
 			return {...prev, [curr._id]:curr}
 		}, {})
 	}, [users])
+
+	const PageSize = 10;
+	const lastPage = useMemo(()=>Math.ceil(users.length / PageSize), [users, PageSize]);
+
+	const [currentPage, setCurrentPage] = useState(1);
+
+	const currentUsers = useMemo(() => {
+		const firstPageIndex = (currentPage - 1) * PageSize; //индекс первого элемента на странице
+		const lastPageIndex = firstPageIndex + PageSize; //индекс последнего элемента(не выводится)
+		return users?.slice(firstPageIndex, lastPageIndex);
+	}, [currentPage, users]);
 
 	return (
 		<Layout>
@@ -78,30 +90,30 @@ const User = observer(() => {
 					</thead>
 					<tbody>
 					{
-						users.map((item)=>{
+						currentUsers.map((item)=>{
 							return <tr key={item._id} className='border-b border-gray bg-black'>
-								<th scope='row' className='pl-6 pr-3 py-1.5 font-medium text-white whitespace-nowrap'>
+								<th scope='row' className='pl-6 pr-3 py-1 font-medium text-white whitespace-nowrap'>
 									{item._id}
 								</th>
-								<td className='pr-3 py-1.5'>
+								<td className='pr-3 py-1'>
 									{item.name}
 								</td>
-								<td className='pr-3 py-1.5'>
+								<td className='pr-3 py-1'>
 									{item.email}
 								</td>
-								<td className='pr-3 py-1.5'>
+								<td className='pr-3 py-1'>
 									{item.role}
 								</td>
-								<td className='pr-3 py-1.5'>
+								<td className='pr-3 py-1'>
 									{item.gender}
 								</td>
-								<td className='pr-3 py-1.5'>
+								<td className='pr-3 py-1'>
 									{item.socialNetwork}
 								</td>
-								<td className='pr-3 py-1.5'>
+								<td className='pr-3 py-1'>
 									{item.info}
 								</td>
-								<td className='pr-6 py-1.5 text-light-gray'>
+								<td className='pr-6 py-1 text-light-gray'>
 									<IconContext.Provider value={{ size: '1.5em'}}>
 										<button className='px-2.5 py-2.5 hover:bg-gray hover:text-white rounded-md' onClick={() => {
 										AdminInstance.setIsModal(false)
@@ -119,6 +131,7 @@ const User = observer(() => {
 					}
 					</tbody>
 				</table>
+				<Pagination currentPage={currentPage} lastPage={lastPage} pageSize={PageSize} totalCount={users.length} onPageChange={page => setCurrentPage(page)}/>
 			</div>
 		</Layout>
 

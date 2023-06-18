@@ -37,9 +37,13 @@ export const check = async () => {
 export const readUsers = async () => {
 	try {
 		const { data } = await $authHost.get('/auth')
+		console.log(data)
 		return data
+
 	} catch (e) {
+		console.log(e)
 		return e
+
 	}
 }
 

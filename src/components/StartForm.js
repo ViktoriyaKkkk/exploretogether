@@ -7,7 +7,8 @@ import { useValidation } from '../utils/useValidation'
 import { clsx } from 'clsx'
 import ErrModal from './ErrModal'
 import { readGeo, readIp } from '../api/api.geo'
-
+import Toast from './Toast'
+import { Toaster } from "react-hot-toast";
 
 const StartForm = observer(() => {
 
@@ -36,14 +37,15 @@ const StartForm = observer(() => {
 				console.log(res)
 				userStore.setUser(res)
 				userStore.setIsAuth(true)
-				readIp().then(r => {
-					if (r) {
-						readGeo(r).then(loc => {
+				readIp().then(({ ip }) => {
+					if (ip) {
+						readGeo(ip).then(loc => {
+							console.log(loc)
 						})
 					}
 				})
 			} else {
-				alert(res.response.data.message)
+				Toast('err','Ошибка!', res.response.data.message)
 			}
 		} else {
 			const res = await registration(name, email, password, gender)
@@ -64,6 +66,7 @@ const StartForm = observer(() => {
 	}
 
 	return (<>
+			<Toaster/>
 			<div className="flex pt-14 flex-col h-screen bg-[url('../../public/img/background.jpg')] bg-cover bg-center">
 				<div className='grid place-items-center mx-2 my-auto'>
 

@@ -15,8 +15,8 @@ export const createReports = async (sender, offender, reportText, processed) => 
 	return data
 }
 
-export const updateReports= async (id,processed) => {
-	const { data } = await $authHost.put('/report', {id, processed})
+export const updateReports= async (id,processed,offenderData, notificationText) => {
+	const { data } = await $authHost.put('/report', {id,processed,offenderData, notificationText})
 	return data
 }
 

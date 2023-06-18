@@ -9,10 +9,12 @@ const ReadModal = observer(({btn, func, dis, children }) => {
 
 	return (
 		<div id='staticModal' data-modal-backdrop='static' tabIndex='-1' aria-hidden='true'
-				 className='fixed flex flex-wrap content-center justify-center right-0 z-50 w-full pt-16 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full'>
+				 className={clsx('fixed flex flex-wrap content-center justify-center right-0 z-40 w-full pt-16 overflow-x-hidden ' +
+					 'overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full', userStore._user.role !== '641e18b855a5d5389d78aba7' && 'pl-36')}>
 			<div className='relative w-full max-w-2xl max-h-full'>
 
-				<div className='relative mx-auto text-white rounded-lg w-4/5 shadow bg-black shadow-md drop-shadow-[0_0_35px_rgba(64,147,107,0.9)]'>
+				<div className={clsx('relative mx-auto text-white rounded-lg w-1/2 shadow bg-black shadow-md ' +
+					'drop-shadow-[0_0_35px_rgba(64,147,107,0.9)]', userStore._user.role === '641e18b855a5d5389d78aba7' && 'w-3/4')}>
 
 					{children}
 

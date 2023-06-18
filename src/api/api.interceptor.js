@@ -9,11 +9,11 @@ export const $authHost = axios.create({
 })
 
 export const $ipHost = axios.create({
-	baseURL: 'https://api.ipify.org?format=json'
+	baseURL: 'https://api64.ipify.org?format=json'
 })
 
 export const $geoHost = axios.create({
-	baseURL: 'https://suggestions.dadata.ru/suggestions/api/4_1/rs/iplocate/address'
+	baseURL: 'https://suggestions.dadata.ru/suggestions/api/4_1/rs/iplocate'
 })
 
 $authHost.interceptors.request.use(config => {
@@ -31,6 +31,7 @@ $geoHost.interceptors.request.use(config => {
 	if (config.headers) {
 		config.headers.Authorization = `Token 205aaeff0691466641ec8372e2f678235c07e2eb`
 	}
+	console.log(config)
 	return config
 })
 

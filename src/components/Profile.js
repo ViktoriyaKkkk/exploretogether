@@ -8,6 +8,8 @@ import { updateUsers } from '../api/api.user'
 import { observer } from 'mobx-react-lite'
 import { useValidation } from '../utils/useValidation'
 import { clsx } from 'clsx'
+import Toast from './Toast'
+import { Toaster } from 'react-hot-toast'
 
 const Profile = observer(() => {
 
@@ -51,11 +53,11 @@ const Profile = observer(() => {
 			if (userStore.editProfile) {
 				updateUsers(userStore.user.id, name, email,'', password, newPassword, gender, socialNetwork, info).then(r=> {
 					if (!r.response || r.response.status === 200){
-						alert("Ваши персональные данные изменены")
+						Toast('ok','Внимание!',"Ваши персональные данные изменены")
 						load()
 						userStore.setEditProfile(false)
 					} else {
-						alert(r.response.data.message)
+						Toast('err','Ошибка!',r.response.data.message)
 					}
 				})
 			}
@@ -188,7 +190,6 @@ const Profile = observer(() => {
 						}
 					</div>
 			}
-
 		</ReadModal>
 	)
 })

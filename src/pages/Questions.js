@@ -7,6 +7,8 @@ import { useAppContext } from '../context/AppContext'
 import { Link } from 'react-router-dom'
 import { createQuestions } from '../api/api.question'
 import { useUsers } from '../utils/useUsers'
+import { Toaster } from 'react-hot-toast'
+import Toast from '../components/Toast'
 
 const Questions = () => {
 
@@ -18,6 +20,7 @@ const Questions = () => {
 
 	return (
 		<Layout>
+			<Toaster/>
 			<div className='absolute w-full -z-20 h-full bg-black'>
 			</div>
 			<div
@@ -295,7 +298,7 @@ const Questions = () => {
 							<button type="button" onClick={()=>{
 							createQuestions(userStore.user.id,question).then(r=> {
 								setQuestion('')
-								alert(r.message)
+								Toast('ok','Успешно!', r.message)
 							})
 							}
 							}

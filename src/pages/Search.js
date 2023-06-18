@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { useNavigate } from 'react-router-dom'
 import { useAppContext } from '../context/AppContext'
@@ -16,6 +16,7 @@ import { useSearch } from '../utils/useSearch'
 import { deleteSearches, updateSearches } from '../api/api.search'
 import { isEditable } from '@testing-library/user-event/dist/utils'
 import UpdateSearch from '../components/UpdateSearch'
+import { Pagination } from '../components/Pagination'
 
 const Search = observer(() => {
 
@@ -35,6 +36,17 @@ const Search = observer(() => {
 			return {...prev, [curr._id]:curr}
 		}, {})
 	}, [searches])
+
+	const PageSize = 16;
+	const lastPage = useMemo(()=>Math.ceil(searches.length / PageSize), [searches, PageSize]);
+
+	const [currentPage, setCurrentPage] = useState(1);
+
+	const currentSearches = useMemo(() => {
+		const firstPageIndex = (currentPage - 1) * PageSize; //индекс первого элемента на странице
+		const lastPageIndex = firstPageIndex + PageSize; //индекс последнего элемента(не выводится)
+		return searches?.slice(firstPageIndex, lastPageIndex);
+	}, [currentPage, searches]);
 	return (
 		<Layout>
 			{
@@ -46,7 +58,7 @@ const Search = observer(() => {
 			<Sidebar />
 			<div className='flex flex-wrap ml-48 mt-16 place-content-center'>
 			{
-				searches?.map((item)=>{
+				currentSearches?.map((item)=>{
 					return 			<div key={item._id}
 						className="flex flex-col text-white place-content-between basis-2/7 mr-5 mb-5 p-6 border border-gray rounded-lg shadow bg-black">
 						<div>
@@ -89,6 +101,7 @@ const Search = observer(() => {
 					</div>
 				})
 			}
+				<Pagination currentPage={currentPage} lastPage={lastPage} pageSize={PageSize} totalCount={searches.length} onPageChange={page => setCurrentPage(page)}/>
 		</div>
 		</Layout>
 

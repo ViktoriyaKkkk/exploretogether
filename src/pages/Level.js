@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { useNavigate } from 'react-router-dom'
 import { useAppContext } from '../context/AppContext'
@@ -15,6 +15,7 @@ import { BiEdit } from 'react-icons/bi'
 import { RiDeleteBin5Line } from 'react-icons/ri'
 import { useLevels } from '../utils/useLevels'
 import { createLevels, deleteLevels, updateLevels } from '../api/api.level'
+import { Pagination } from '../components/Pagination'
 
 const Level = observer(() => {
 
@@ -36,6 +37,17 @@ const Level = observer(() => {
 	}, [levels])
 
 	const [sections] = useSections()
+
+	const PageSize = 10;
+	const lastPage = useMemo(()=>Math.ceil(levels.length / PageSize), [levels, PageSize]);
+
+	const [currentPage, setCurrentPage] = useState(1);
+
+	const currentLevels = useMemo(() => {
+		const firstPageIndex = (currentPage - 1) * PageSize; //индекс первого элемента на странице
+		const lastPageIndex = firstPageIndex + PageSize; //индекс последнего элемента(не выводится)
+		return levels?.slice(firstPageIndex, lastPageIndex);
+	}, [currentPage, levels]);
 
 	return (
 		<Layout>
@@ -83,18 +95,18 @@ const Level = observer(() => {
 						</thead>
 						<tbody>
 						{
-							levels.map((item) => {
+							currentLevels.map((item) => {
 								return <tr key={item._id} className='border-b border-gray bg-black'>
-									<th scope='row' className='px-6 py-2 font-medium text-white whitespace-nowrap'>
+									<th scope='row' className='px-6 py-1 font-medium text-white whitespace-nowrap'>
 										{item._id}
 									</th>
-									<td className='px-3 py-1.5'>
+									<td className='px-3 py-1'>
 										{item.sectionId}
 									</td>
-									<td className='px-3 py-1.5'>
+									<td className='px-3 py-1'>
 										{item.name}
 									</td>
-									<td className='pr-3 py-1.5 text-light-gray'>
+									<td className='pr-3 py-1 text-light-gray'>
 										<IconContext.Provider value={{ size: '1.5em' }}>
 											<button className='px-2.5 py-2.5 hover:bg-gray hover:text-white rounded-md' onClick={() => {
 												AdminInstance.setIsModal(false)
@@ -114,6 +126,7 @@ const Level = observer(() => {
 						</tbody>
 					</table>
 				</div>
+				<Pagination currentPage={currentPage} lastPage={lastPage} pageSize={PageSize} totalCount={levels.length} onPageChange={page => setCurrentPage(page)}/>
 			</div>
 		</Layout>
 

@@ -22,6 +22,7 @@ import Profile from '../components/Profile'
 import { BsChatDots } from 'react-icons/bs'
 import { FaRegListAlt } from 'react-icons/fa'
 import { AiOutlineInfoCircle } from 'react-icons/ai'
+import { Toaster } from 'react-hot-toast'
 
 const Dialogs = observer(() => {
 	const { userStore, AdminInstance } = useAppContext()
@@ -33,6 +34,7 @@ const Dialogs = observer(() => {
 	let { id } = useParams()
 
 	const [searches, err, load] = useSearch()
+	searches.reverse()
 	const chats = useMemo(() => searches?.filter(search => {
 		let res = false
 		search.owner === userStore._user.id ? res = true : search.participants.forEach((item) => {
@@ -95,17 +97,6 @@ const Dialogs = observer(() => {
 		userStore.setNotifications(newNotifications)
 	}, [location])
 
-	useEffect(() => {
-		userStore.socket.on('receive_message', (data) => {
-			userStore.setChat([...userStore.chat, data])
-
-			if (data.searchId !== location.pathname.split('/')[2]) {
-				userStore.setNotifications([...userStore.notifications, data])
-				console.log('zzzzzzzzzz', mobx.toJS(userStore.notifications))
-			}
-		})
-	}, [userStore.socket])
-
 	const messagesEndRef = useRef(null)
 
 	const scrollToBottom = () => {
@@ -149,16 +140,33 @@ const Dialogs = observer(() => {
 	const [bluredReport, setBluredReport] = useState(false)
 
 	const [tab, setTab] = useState('chat')
+	let vh = window.innerHeight * 0.01;
+// Then we set the value in the --vh custom property to the root of the document
+	document.documentElement.style.setProperty('--vh', `${vh}px`);
 
-	if (typeof selectedChat === 'undefined' || typeof id === 'undefined' || Object.keys(usersById).length === 0 || chats === [] ||
-		typeof chats === 'undefined') {
+	useMemo(()=>{
+		userStore.setIsLoading(false)
+	})
+
+	if (((id !== 'undefined' && id !== null) && typeof selectedChat === 'undefined') || Object.keys(usersById).length === 0 || typeof chats === 'undefined'){
+	return	<Layout>
+			<div className='absolute w-full -z-20 h-full bg-black'>
+			</div>
+			<div
+				className="absolute w-full -z-10 h-full [mask-image:linear-gradient(0deg,black,transparent)] bg-repeat bg-[url('../../public/img/bggrid2.svg')] ">
+			</div>
+			<div className='h-screen h-[calc(var(--vh, 1vh) * 100)] flex flex-col items-center'>
+			</div>
+		</Layout>
+	} else if (  chats === [] || typeof selectedChat === 'undefined'
+		) {
 		return <Layout>
 			<div className='absolute w-full -z-20 h-full bg-black'>
 			</div>
 			<div
 				className="absolute w-full -z-10 h-full [mask-image:linear-gradient(0deg,black,transparent)] bg-repeat bg-[url('../../public/img/bggrid2.svg')] ">
 			</div>
-			<div className='h-screen flex flex-col items-center'>
+			<div className='h-screen h-[calc(var(--vh, 1vh) * 100)] flex flex-col items-center'>
 				<h2 className='my-auto text-3xl text-light-gray text-center font-bold'>У вас пока нет начатых диалогов</h2>
 			</div>
 		</Layout>
@@ -166,6 +174,7 @@ const Dialogs = observer(() => {
 
 	return (
 		<Layout>
+			<Toaster/>
 			{
 				userStore.isProfile && <Profile />
 			}
@@ -344,10 +353,10 @@ const Dialogs = observer(() => {
 							<div
 								className={clsx('scrollbar flex overflow-y-scroll h-5/6 flex-col mt-5', userStore.chat && userStore.chat?.length > 6 &&
 									'scrollbar-thumb-light-gray scrollbar-track-gray scrollbar-thin')}>
-								{
-									userStore.chat.map((message) => {
+								{ userStore.chat.length === 0 ? <h1 className='text-xl text-gray place-self-center'>Здесь пока нет сообщений</h1> :
+									userStore.chat.map((message,i) => {
 										if (location.pathname.split('/')[2] === message.searchId) {
-											return <div ref={messagesEndRef} key={message._id || Math.floor(Math.random() * (100000 - 1) + 1)}
+											return <div ref={messagesEndRef} key={i}
 																	className={clsx('flex mt-2', message.author === userStore.user.id ?
 																		'justify-end' : 'justify-start')}>
 												{
