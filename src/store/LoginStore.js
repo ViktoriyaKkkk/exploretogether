@@ -9,7 +9,7 @@ export default class LoginStore {
 	_isProfile = false
 	_editProfile = false
 	_city = ''
-	_socket = io.connect('http://localhost:5000')
+	_socket = io.connect('https://exploretogetherserver.onrender.com/')
 	_chat = []
 	_notifications = []
 	_isConnected = false
