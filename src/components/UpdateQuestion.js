@@ -1,10 +1,8 @@
 import React, { useState } from 'react'
-import { updateQuestions } from '../api/api.question'
 import { IconContext } from 'react-icons'
 import { IoClose } from 'react-icons/io5'
 import ModalLayout from './ModalLayout'
 import { useAppContext } from '../context/AppContext'
-import { useQuestions } from '../utils/useQuestions'
 import { useValidation } from '../utils/useValidation'
 
 const UpdateQuestion = ({records, load, updateFunc }) => {
@@ -21,7 +19,6 @@ const UpdateQuestion = ({records, load, updateFunc }) => {
 				setBluredQuestion(false)
 				setAnswer('')
 				load()
-				console.log(r)
 			})
 		}}>
 			<div className='relative flex items-start justify-center p-4 border-b border-gray rounded-t'>

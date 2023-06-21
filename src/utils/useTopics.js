@@ -1,7 +1,6 @@
 import {useEffect, useState} from 'react';
 import { readTopics } from '../api/api.topic'
 
-
 export const useTopics = () => {
 	const [topics, setTopics] = useState([])
 	const [error, setError] = useState(null)

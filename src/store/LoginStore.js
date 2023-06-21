@@ -9,10 +9,10 @@ export default class LoginStore {
 	_isProfile = false
 	_editProfile = false
 	_city = ''
-	_socket = io.connect('https://exploretogetherserver.onrender.com')
+	_socket = io.connect('http://localhost:5000')
 	_chat = []
 	_notifications = []
-	_isLoading = true
+	_isConnected = false
 	constructor() {
 		makeAutoObservable(this)
 	}
@@ -84,10 +84,10 @@ export default class LoginStore {
 		return this._notifications
 	}
 
-	setIsLoading(isLoading){
-		this._isLoading = isLoading
+	setIsConnected(isConnected){
+		this._isConnected = isConnected
 	}
-	get isLoading() {
-		return this._isLoading
+	get isConnected() {
+		return this._isConnected
 	}
 }

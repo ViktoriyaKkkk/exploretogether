@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { login, registration } from '../api/api.user'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useAppContext } from '../context/AppContext'
 import { observer } from 'mobx-react-lite'
 import { useValidation } from '../utils/useValidation'
 import { clsx } from 'clsx'
-import ErrModal from './ErrModal'
 import { readGeo, readIp } from '../api/api.geo'
 import Toast from './Toast'
-import { Toaster } from "react-hot-toast";
+import { Toaster } from 'react-hot-toast'
+import Layout from './Layout'
 
 const StartForm = observer(() => {
 
@@ -18,34 +18,27 @@ const StartForm = observer(() => {
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
 	const [gender, setGender] = useState('Жен')
-	const [socialNetwork, setSocialNetwork] = useState('')
 	const [nameErr, validateName] = useValidation(name, { minLength: 3, isEmpty: true })
 	const [bluredName, setBluredName] = useState(false)
 	const [passwordErr, validatePassword] = useValidation(password, { minLength: 6, isEmpty: true, maxLength: 20 })
 	const [bluredPassword, setBluredPassword] = useState(false)
 	const [emailErr, validateEmail] = useValidation(email, { isEmpty: true, isCorrect: true })
 	const [bluredEmail, setBluredEmail] = useState(false)
-	// const [snErr, validateSn] = useValidation(socialNetwork, { isEmpty: true })
-	// const [bluredSn, setBluredSn] = useState(false)
-
-	const navigate = useNavigate()
 
 	const auth = async () => {
 		if (userStore._isLogin) {
 			const res = await login(email, password)
 			if (!res.response || res.response.status === 200) {
-				console.log(res)
 				userStore.setUser(res)
 				userStore.setIsAuth(true)
 				readIp().then(({ ip }) => {
 					if (ip) {
 						readGeo(ip).then(loc => {
-							console.log(loc)
 						})
 					}
 				})
 			} else {
-				Toast('err','Ошибка!', res.response.data.message)
+				Toast('err', 'Ошибка!', res.response.data.message)
 			}
 		} else {
 			const res = await registration(name, email, password, gender)
@@ -65,8 +58,8 @@ const StartForm = observer(() => {
 		}
 	}
 
-	return (<>
-			<Toaster/>
+	return (<Layout>
+			<Toaster />
 			<div className="flex pt-14 flex-col h-screen bg-[url('../../public/img/background.jpg')] bg-cover bg-center">
 				<div className='grid place-items-center mx-2 my-auto'>
 
@@ -88,7 +81,7 @@ const StartForm = observer(() => {
 														 setBluredName(true)
 														 validateName()
 													 }}
-													 className={clsx('block w-full px-2 py-1.5 mt-1.5 text-gray bg-white border ' +
+													 className={clsx('block w-full px-2 py-1.5 mt-1.5 text-black bg-white border ' +
 														 'border-gray rounded-md focus:border-dark-green focus:shadow-light-green focus:ring-2 ' +
 														 'focus:ring-light-green focus:outline-none', nameErr && bluredName && 'ring-2 ring-red focus:ring-red')}
 													 required />
@@ -146,37 +139,6 @@ const StartForm = observer(() => {
 												<option value={'Муж'}>Мужской</option>
 											</select>
 										</div>
-										{/*<div className='flex items-center mb-4'>*/}
-
-										{/*	<input*/}
-										{/*		className='w-4 h-4 text-green-600 bg-gray-100 border-gray-300 focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'*/}
-										{/*		type='radio'*/}
-										{/*		name='gender'*/}
-										{/*		value='Жен'*/}
-										{/*		id='female'*/}
-										{/*		onChange={e => setGender(e.target.value)}*/}
-										{/*		checked={gender === 'Жен' ? true : false} />*/}
-										{/*	<label*/}
-										{/*		className='mt-px text-black inline-block pl-[0.15rem] hover:cursor-pointer'*/}
-										{/*		htmlFor='female'>*/}
-										{/*		Жен*/}
-										{/*	</label>*/}
-										{/*</div>*/}
-										{/*<div className='flex items-center mb-4'>*/}
-										{/*	<input*/}
-										{/*		className='w-4 h-4 text-green-600 bg-gray-100 border-gray-300 focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'*/}
-										{/*		type='radio'*/}
-										{/*		name='gender'*/}
-										{/*		value='Муж'*/}
-										{/*		id='male'*/}
-										{/*		onChange={e => setGender(e.target.value)}*/}
-										{/*		checked={gender === 'Муж' ? true : false} />*/}
-										{/*	<label*/}
-										{/*		className='mt-px inline-block text-black pl-[0.15rem] hover:cursor-pointer'*/}
-										{/*		htmlFor='male'>*/}
-										{/*		Муж*/}
-										{/*	</label>*/}
-										{/*</div>*/}
 									</>
 								}
 
@@ -199,20 +161,21 @@ const StartForm = observer(() => {
 
 								<button type='button'
 												disabled={!userStore._isLogin ? emailErr || passwordErr || nameErr : emailErr || passwordErr}
-												onClick={auth}
+												onClick={()=>{
+													auth().then()
+												}}
 												className='w-full py-3 bg-dark-green bg-transparent-none rounded-md
                     font-medium text-white text-sm uppercase text-center
                     focus:outline-none hover:bg-light-green hover:shadow-none  disabled:cursor-not-allowed'>
 									{userStore._isLogin ? 'Войти' : 'Зарегистрироваться'}
 								</button>
 
-
 							</div>
 						</form>
 					</div>
 				</div>
 			</div>
-		</>
+		</Layout>
 	)
 })
 

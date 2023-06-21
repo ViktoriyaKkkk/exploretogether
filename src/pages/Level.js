@@ -3,10 +3,8 @@ import { observer } from 'mobx-react-lite'
 import { useNavigate } from 'react-router-dom'
 import { useAppContext } from '../context/AppContext'
 import { useSections } from '../utils/useSections'
-
 import Layout from '../components/Layout'
 import UpdateMiddle from '../components/UpdateMiddle'
-
 import DeleteModal from '../components/DeleteModal'
 import CreateMiddle from '../components/CreateMiddle'
 import Sidebar from '../components/Sidebar'

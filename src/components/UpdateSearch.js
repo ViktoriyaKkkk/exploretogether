@@ -6,9 +6,6 @@ import { IconContext } from 'react-icons'
 import { IoClose } from 'react-icons/io5'
 import { useUsers } from '../utils/useUsers'
 import { useLevels } from '../utils/useLevels'
-import { useSearch } from '../utils/useSearch'
-import { useSections } from '../utils/useSections'
-import { useTopics } from '../utils/useTopics'
 import { useDurations } from '../utils/useDurations'
 import { usePeriodicities } from '../utils/usePeriodicities'
 import { useTimes } from '../utils/useTimes'
@@ -40,16 +37,16 @@ const UpdateSearch = observer(({document, records, load, updateFunc}) => {
 	const [selectedDuration,setSelectedDuration] = useState(records[AdminInstance._isEditing]['duration'])
 	const [durations] = useDurations()
 
-	const [periodicities, errorPeriodicity] = usePeriodicities()
+	const [periodicities] = usePeriodicities()
 	const [selectedPeriodicity, setSelectedPeriodicity] = useState(records[AdminInstance._isEditing]['periodicity'])
 
-	const [times, errorTime] = useTimes()
+	const [times] = useTimes()
 	const [selectedTime, setSelectedTime] = useState(records[AdminInstance._isEditing]['time'])
 
-	const [formats, errorFormat] = useFormats()
+	const [formats] = useFormats()
 	const [selectedFormat, setSelectedFormat] = useState(records[AdminInstance._isEditing]['format'])
 
-	const [cities, errorCity] = useCities()
+	const [cities] = useCities()
 	const [selectedCity, setSelectedCity] =useState(records[AdminInstance._isEditing]['city'])
 
 	const [selectedNumberOfPeople, setSelectedNumberOFPeople] = useState(records[AdminInstance._isEditing]['numberOfPeople'])
@@ -58,7 +55,7 @@ const UpdateSearch = observer(({document, records, load, updateFunc}) => {
 
 	const [selectedSearchGender, setSelectedSearchGender] = useState(records[AdminInstance._isEditing]['searchGender'])
 
-	const [ages, errorAge] = useAges()
+	const [ages] = useAges()
 	const [selectedAge, setSelectedAge] = useState(records[AdminInstance._isEditing]['age'])
 
 	const [selectedMarker, setSelectedMarker] = useState(records[AdminInstance._isEditing]['marker'])
@@ -67,7 +64,6 @@ const UpdateSearch = observer(({document, records, load, updateFunc}) => {
 		<ModalLayout admin={true} func={()=> {
 			updateFunc(AdminInstance._isEditing, selectedMarker, selectedName, selectedOwner, selectedLevel, selectedDuration, selectedPeriodicity, selectedTime,
 				selectedFormat, selectedAge, selectedParticipantsGender, selectedSearchGender, selectedCity, selectedNumberOfPeople).then(r=> {
-				// console.log(r)
 				load()
 			})
 			AdminInstance.setIsEditing('')
@@ -96,35 +92,6 @@ const UpdateSearch = observer(({document, records, load, updateFunc}) => {
 									 id='name' type='text' className='block w-full px-4 py-2 mt-2 rounded-md focus:outline-none placeholder-light-gray
 									 text-white bg-black border border-gray focus:ring-2 focus:ring-light-green' />
 					</div>
-
-					{/*<div>*/}
-					{/*	<label className='text-white dark:text-gray-200' htmlFor='passwordConfirmation'>Тематика</label>*/}
-					{/*	<select value={selectedTopic} onChange={e => setSelectedTopic(e.target.value)}*/}
-					{/*					className='block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800*/}
-					{/*						dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring'>*/}
-					{/*		<option value={0}>Выберите тему</option>*/}
-					{/*		{*/}
-					{/*			topics.map((topic) => {*/}
-					{/*				return <option value={topic._id} key={topic._id}>{topic.name}</option>*/}
-					{/*			})*/}
-					{/*		}*/}
-					{/*	</select>*/}
-					{/*</div>*/}
-
-					{/*<div>*/}
-					{/*	<label className='text-white dark:text-gray-200' htmlFor='passwordConfirmation'>Раздел</label>*/}
-					{/*	<select value={selectedSection}*/}
-					{/*					onChange={(e) => setSelectedSection(e.target.value)}*/}
-					{/*					className='block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800*/}
-					{/*			dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring'>*/}
-					{/*		<option value='0'>Выберите раздел</option>*/}
-					{/*		{*/}
-					{/*			bundlOfSections?.map((section) => {*/}
-					{/*				return <option value={section._id} key={section._id}>{section.name}</option>*/}
-					{/*			})*/}
-					{/*		}*/}
-					{/*	</select>*/}
-					{/*</div>*/}
 
 					<div>
 						<label className='text-white' htmlFor='passwordConfirmation'>Level: </label>
@@ -276,9 +243,7 @@ const UpdateSearch = observer(({document, records, load, updateFunc}) => {
 					</div>
 
 				</div>
-
 			</form>
-
 		</ModalLayout>
 	)
 })

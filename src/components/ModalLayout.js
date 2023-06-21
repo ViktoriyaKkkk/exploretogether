@@ -1,12 +1,11 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { clsx } from 'clsx'
 import { useAppContext } from '../context/AppContext'
 import { observer } from 'mobx-react-lite'
-import { updateAges } from '../api/api.age'
 
 const ModalLayout = observer(({admin, func, children }) => {
 
-	const { AdminInstance, userStore } = useAppContext()
+	const { AdminInstance} = useAppContext()
 
 	return (
 		<div id='staticModal' data-modal-backdrop='static' tabIndex='-1' aria-hidden='true'
@@ -21,9 +20,7 @@ const ModalLayout = observer(({admin, func, children }) => {
 					<div className='flex place-content-center items-center p-6 space-x-2 border-t border-gray rounded-b'>
 						<button data-modal-hide='staticModal' type='button' onClick={()=> {
 							func()
-
 							AdminInstance.setIsModal(!AdminInstance._isModal)
-							console.log(AdminInstance._isModal)
 						}}
 										className='px-6 disabled:cursor-not-allowed md:text-base text-sm py-2 leading-5 text-white transition-colors
 										duration-200 transform bg-dark-green rounded-md

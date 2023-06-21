@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { observer } from 'mobx-react-lite'
-import * as  mobx from 'mobx'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import Layout from '../components/Layout'
 import { IoLogoOctocat } from 'react-icons/io'
@@ -10,7 +9,7 @@ import { IoClose, IoSendSharp } from 'react-icons/io5'
 import { useAppContext } from '../context/AppContext'
 import { clsx } from 'clsx'
 import { useMessages } from '../utils/useMessages'
-import { createMessages, readMessages } from '../api/api.message'
+import { createMessages } from '../api/api.message'
 import { HiUserGroup } from 'react-icons/hi'
 import { useSearch } from '../utils/useSearch'
 import { useUsers } from '../utils/useUsers'
@@ -33,7 +32,7 @@ const Dialogs = observer(() => {
 	})
 	let { id } = useParams()
 
-	const [searches, err, load] = useSearch()
+	const [searches] = useSearch()
 	searches.reverse()
 	const chats = useMemo(() => searches?.filter(search => {
 		let res = false
@@ -54,21 +53,7 @@ const Dialogs = observer(() => {
 	const navigate = useNavigate()
 	if (id != null && id !== 'undefined') {
 		useMessages(id)
-		// userStore.socket.emit('join_room', id)
 	}
-
-	// chats?.forEach((item)=>{
-	// 	userStore.socket.emit('join_room', item._id)
-	// })
-
-	// useEffect(async ()=> {
-	// 	const messages = await readMessages(id)
-	// 	if (messages) {
-	// 		userStore.setChat(messages)
-	// 		console.log(messages)
-	// 	}
-	// },[])
-
 
 	const [currMessage, setCurrMessage] = useState('')
 
@@ -95,7 +80,7 @@ const Dialogs = observer(() => {
 			}
 		})
 		userStore.setNotifications(newNotifications)
-	}, [location])
+	}, [location,userStore.chat])
 
 	const messagesEndRef = useRef(null)
 
@@ -107,18 +92,6 @@ const Dialogs = observer(() => {
 		scrollToBottom()
 	})
 
-	// const [searches, err, load] = useSearch()
-	//
-	// const chats = useMemo(() => searches?.filter(search => {
-	// 	let res = false
-	// 	search.owner === userStore._user.id ? res = true : search.participants.forEach((item) => {
-	// 		if (item === userStore._user.id) {
-	// 			res = true
-	// 		}
-	// 	})
-	// 	return res
-	// }), [searches, userStore])
-
 	const [selectedChat, setSelectedChat] = useState({})
 	useEffect(() => {
 		if (typeof id !== 'undefined' && typeof chats !== 'undefined' && chats !== []) {
@@ -128,7 +101,7 @@ const Dialogs = observer(() => {
 		}
 	}, [chats, id])
 
-	const [users, error] = useUsers()
+	const [users] = useUsers()
 	const usersById = useMemo(() => {
 		return users?.reduce((prev, curr) => {
 			return { ...prev, [curr._id]: curr }
@@ -143,10 +116,6 @@ const Dialogs = observer(() => {
 	let vh = window.innerHeight * 0.01;
 // Then we set the value in the --vh custom property to the root of the document
 	document.documentElement.style.setProperty('--vh', `${vh}px`);
-
-	useMemo(()=>{
-		userStore.setIsLoading(false)
-	})
 
 	if (((id !== 'undefined' && id !== null) && typeof selectedChat === 'undefined') || Object.keys(usersById).length === 0 || typeof chats === 'undefined'){
 	return	<Layout>
@@ -180,9 +149,7 @@ const Dialogs = observer(() => {
 			}
 			{Object.keys(userStore.isReading).length !== 0 &&
 				<ReadModal btn={'Пожаловаться на пользователя'} dis={false} func={() => {
-					console.log(`Вы пожаловались на ${userStore.isReading.name}`)
 					AdminInstance.setIsModal(!AdminInstance.isModal)
-					// userStore.setIsReading('')
 				}}>
 					<div className='relative flex items-start text-center justify-center p-4 border-b rounded-t border-gray'>
 						<h3 className='md:text-xl text-base mr-7 font-semibold text-white place-self-center'>
@@ -211,7 +178,8 @@ const Dialogs = observer(() => {
 			{/*Окно жалобы*/}
 
 			<ModalLayout admin={false} func={() => {
-				createReports(userStore.user.id, userStore.isReading._id, reportText).then(r => console.log(r))
+				createReports(userStore.user.id, userStore.isReading._id, reportText).then(r => {
+				})
 				alert(`Вы пожаловались на пользователя ${userStore.isReading.name}`)
 			}}>
 				<div className='relative flex items-start justify-center p-4 border-b border-gray rounded-t'>
@@ -237,7 +205,7 @@ const Dialogs = observer(() => {
 											setBluredReport(true)
 											validateReport()
 										}}
-										className='block w-full px-4 py-2 text-gray bg-black font-semibold
+										className='block w-full px-4 py-2 text-white bg-black font-semibold
 								border border-gray rounded-md focus:border-dark-green focus:outline-none focus:ring-2 focus:ring-light-green'
 										required />
 					{
@@ -268,7 +236,7 @@ const Dialogs = observer(() => {
 					{/*Chatting*/}
 
 					<div
-						className='relative md:pt-0 pt-24 flex md:flex-row md:h-2/3 h-5/6 w-full md:w-4/5 xl:w-2/3 rounded-lg bg-black shadow shadow-md drop-shadow-[0_0_35px_rgba(64,147,107,0.9)]'>
+						className='relative md:pt-0 pt-24 flex md:flex-row md:h-2/3 h-5/6 w-full md:w-11/12 xl:w-2/3 rounded-lg bg-black shadow shadow-md drop-shadow-[0_0_35px_rgba(64,147,107,0.9)]'>
 						{/*chat list*/}
 						<div className='absolute md:hidden w-full top-0 h-24 flex flex-row place-content-between p-5 text-white border-b border-gray'>
 							<IconContext.Provider value={{ size: '2em'}}>
@@ -278,7 +246,8 @@ const Dialogs = observer(() => {
 								<button onClick={()=>setTab('chat')} className={clsx('p-2 font-bold relative', tab === 'chat' && 'text-light-green')}>
 									<BsChatDots />
 									{
-										userStore.notifications.length !== 0 && <span
+										userStore.notifications.filter((item) => {
+											return (location.pathname.split('/')[2] !== item.searchId)}).length !== 0 && <span
 											className=" absolute top-0 right-0 inline-flex items-center justify-center w-4 h-4 md:w-3 md:h-3 ml-2 md:text-xs text-base font-semibold text-black bg-light-green
 									rounded-full">{userStore.notifications.length}</span>
 									}
@@ -290,13 +259,6 @@ const Dialogs = observer(() => {
 						</div>
 						<div className={clsx('md:grid grid-cols-1 md:place-content-start place-content-center min-w-full md:min-w-fit ' +
 							'md:border-r-2 border-gray overflow-y-auto', tab !== 'dialogs' && 'hidden')}>
-							{/*<div className='border-b-2 border-gray py-4 px-2'>*/}
-							{/*	<input*/}
-							{/*		type='text'*/}
-							{/*		placeholder='search chatting'*/}
-							{/*		className='py-2 px-2 border-2 border-gray rounded-2xl w-full'*/}
-							{/*	/>*/}
-							{/*</div>*/}
 
 							{chats &&
 								chats?.map((chat) => {
@@ -309,8 +271,7 @@ const Dialogs = observer(() => {
 										<div className='w-1/4 text-white relative'>
 											{
 												userStore.notifications.filter((item) => {
-													return item.searchId === chat._id
-												}).length !== 0 && <span
+													return (item.searchId === chat._id && location.pathname.split('/')[2] !== item.searchId)}).length !== 0 && <span
 													className=' absolute -top-1 -left-3 inline-flex items-center justify-center w-3 h-3 ml-2 text-xs
 													font-semibold text-black bg-light-green rounded-full'>{userStore.notifications.filter((item) => {
 													return item.searchId === chat._id
@@ -327,23 +288,6 @@ const Dialogs = observer(() => {
 								})
 							}
 
-
-							{/*<div*/}
-							{/*	className='flex flex-row py-4 px-2 items-center border-b-2 border-l-4 border-dark-green'*/}
-							{/*>*/}
-							{/*	<div className='w-1/4'>*/}
-							{/*		<img*/}
-							{/*			src='https://source.unsplash.com/L2cxSuKWbpo/600x600'*/}
-							{/*			className='object-cover h-12 w-12 rounded-full'*/}
-							{/*			alt=''*/}
-							{/*		/>*/}
-							{/*	</div>*/}
-							{/*	<div className='w-full'>*/}
-							{/*		<div className='text-lg font-semibold'>MERN Stack</div>*/}
-							{/*		<span className='text-gray'>Lusi : Thanks Everyone</span>*/}
-							{/*	</div>*/}
-							{/*</div>*/}
-
 							{/*end user list */}
 						</div>
 						{/*end chat list*/}
@@ -353,7 +297,9 @@ const Dialogs = observer(() => {
 							<div
 								className={clsx('scrollbar flex overflow-y-scroll h-5/6 flex-col mt-5', userStore.chat && userStore.chat?.length > 6 &&
 									'scrollbar-thumb-light-gray scrollbar-track-gray scrollbar-thin')}>
-								{ userStore.chat.length === 0 ? <h1 className='text-xl text-gray place-self-center'>Здесь пока нет сообщений</h1> :
+								{ userStore.chat.filter((item)=>{
+									return item.searchId === location.pathname.split('/')[2]
+								}).length === 0 ? <h1 className='text-xl text-gray place-self-center'>Здесь пока нет сообщений</h1> :
 									userStore.chat.map((message,i) => {
 										if (location.pathname.split('/')[2] === message.searchId) {
 											return <div ref={messagesEndRef} key={i}
@@ -400,8 +346,7 @@ const Dialogs = observer(() => {
 							<div className='relative h-20 py-5'>
 								<IconContext.Provider value={{ size: '2em' }}>
 									<button className='px-2.5 py-2.5 text-dark-green absolute right-0 top-3.5 z-10' onClick={() => {
-										// userStore.setIsProfile(true)
-										sendMessage().then(r => console.log(r))
+										sendMessage().then(r => {})
 										setCurrMessage('')
 									}}><IoSendSharp />
 									</button>
@@ -432,12 +377,6 @@ const Dialogs = observer(() => {
 											{usersById[participant]['name']}</span>
 									})
 								}
-								{/*<div className='font-semibold text-white py-4'>{usersById[selectedChat.topicId]}</div>*/}
-								{/*<div className='font-semibold text-white py-4'>{selectedChat.format}</div>*/}
-								{/*<div className='font-light'>*/}
-								{/*	Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt,*/}
-								{/*	perspiciatis!*/}
-								{/*</div>*/}
 							</div>
 						</div>
 					</div>

@@ -1,4 +1,4 @@
-import { $authHost, $host } from './api.interceptor'
+import { $authHost} from './api.interceptor'
 
 export const readMessages = async (id) => {
 	try {

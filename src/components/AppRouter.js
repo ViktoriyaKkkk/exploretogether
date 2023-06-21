@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {routes} from "../routes";
 import {Routes, Route, Navigate} from "react-router-dom";
 import { useAppContext } from '../context/AppContext'
@@ -22,13 +22,11 @@ const AppRouter = () => {
 		},
 			err =>{
 				userStore.setIsAuth(false)
-				console.log('checkError',userStore._isAuth)
 			}
 			).finally(()=>setLoading(false))
 	})
 
 	if (loading){
-		console.log('loading')
 		return <></>
 	}
 

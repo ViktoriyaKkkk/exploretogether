@@ -1,13 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { useAppContext } from '../context/AppContext'
 import { useReports } from '../utils/useReports'
-import { createReports, deleteReports, updateReports } from '../api/api.report'
+import { deleteReports, updateReports } from '../api/api.report'
 import DeleteModal from '../components/DeleteModal'
 import Sidebar from '../components/Sidebar'
 import Layout from '../components/Layout'
 import { useNavigate } from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
-import { BiEdit } from 'react-icons/bi'
 import { IconContext } from 'react-icons'
 import { RiDeleteBin5Line } from 'react-icons/ri'
 import { MdDoneOutline } from 'react-icons/md'
@@ -104,7 +103,7 @@ const Report = observer(() => {
 											autoComplete='report'
 											value={notificationText} onChange={e => setNotificationText(e.target.value)}
 
-											className='block w-full px-4 py-2 text-gray bg-black font-semibold
+											className='block w-full px-4 py-2 text-white bg-black font-semibold
 								border border-gray rounded-md focus:border-dark-green focus:outline-none focus:ring-2 focus:ring-light-green'
 											required />
 					</div>

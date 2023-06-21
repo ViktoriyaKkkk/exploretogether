@@ -2,19 +2,11 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { useNavigate } from 'react-router-dom'
 import { useAppContext } from '../context/AppContext'
-import { useUsers } from '../utils/useUsers'
-
 import Layout from '../components/Layout'
-import UpdateUser from '../components/UpdateUser'
-import { deleteUsers, updateUsers } from '../api/api.user'
 import DeleteModal from '../components/DeleteModal'
 import Sidebar from '../components/Sidebar'
-import { IconContext } from 'react-icons'
-import { BiEdit } from 'react-icons/bi'
-import { RiDeleteBin5Line } from 'react-icons/ri'
 import { useSearch } from '../utils/useSearch'
 import { deleteSearches, updateSearches } from '../api/api.search'
-import { isEditable } from '@testing-library/user-event/dist/utils'
 import UpdateSearch from '../components/UpdateSearch'
 import { Pagination } from '../components/Pagination'
 
@@ -22,7 +14,6 @@ const Search = observer(() => {
 
 	const navigate = useNavigate()
 	const { userStore } = useAppContext()
-	// useEffect(()=>{
 	useEffect(()=>{
 		if (Object.keys(userStore._user).length === 0 || userStore._user.role === '641e18b855a5d5389d78aba7') {
 			navigate("/")

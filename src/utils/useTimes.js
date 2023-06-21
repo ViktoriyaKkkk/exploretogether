@@ -1,7 +1,6 @@
 import {useEffect, useState} from 'react';
 import { readTimes } from '../api/api.time'
 
-
 export const useTimes = () => {
 	const [times, setTimes] = useState([])
 	const [error, setError] = useState(null)

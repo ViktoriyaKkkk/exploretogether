@@ -14,7 +14,6 @@ export const registration = async (name, email, password, gender) => {
 export const login = async (email, password) => {
 	try {
 		const { data } = await $host.post('/auth/login', {email, password})
-		console.log("login: ",jwtDecode(data))
 		localStorage.setItem("token", data)
 		return jwtDecode(data)
 	} catch (e) {
@@ -25,7 +24,6 @@ export const login = async (email, password) => {
 export const check = async () => {
 	try {
 		const { data } = await $authHost.get('/auth/check')
-		// console.log("res: ",res)
 		localStorage.setItem("token", data)
 		return jwtDecode(data)
 
@@ -37,11 +35,9 @@ export const check = async () => {
 export const readUsers = async () => {
 	try {
 		const { data } = await $authHost.get('/auth')
-		console.log(data)
 		return data
 
 	} catch (e) {
-		console.log(e)
 		return e
 
 	}

@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { useAppContext } from '../context/AppContext'
-
 import ModalLayout from './ModalLayout'
 import { IconContext } from 'react-icons'
 import { IoClose } from 'react-icons/io5'
@@ -15,7 +14,6 @@ const CreateMiddle = observer(({document, load, createFunc, dependName, dependen
 	return (
 		<ModalLayout admin={true} func={()=> {
 			createFunc(name, dependence).then(r=> {
-				console.log(r)
 				load()
 			})
 			AdminInstance.setIsCreating(false)

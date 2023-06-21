@@ -6,7 +6,6 @@ import { clsx } from 'clsx'
 import { useAppContext } from '../context/AppContext'
 import { Link } from 'react-router-dom'
 import { createQuestions } from '../api/api.question'
-import { useUsers } from '../utils/useUsers'
 import { Toaster } from 'react-hot-toast'
 import Toast from '../components/Toast'
 
@@ -40,7 +39,6 @@ const Questions = () => {
 					<button onClick={
 						()=> {
 							setAnswers({ ...answers, first: !answers.first})
-							console.log(answers)
 						}
 					}
 						className='text-light-green md:ml-7 p-2 hover:text-dark-green'><IconContext.Provider
@@ -91,7 +89,6 @@ const Questions = () => {
 					<button onClick={
 						()=> {
 							setAnswers({ ...answers, second: !answers.second})
-							console.log(answers)
 						}
 					}
 									className='text-light-green md:ml-7 p-2 hover:text-dark-green'><IconContext.Provider
@@ -141,7 +138,6 @@ const Questions = () => {
 					<button onClick={
 						()=> {
 							setAnswers({ ...answers, third: !answers.third})
-							console.log(answers)
 						}
 					}
 									className='text-light-green md:ml-7 p-2 hover:text-dark-green'><IconContext.Provider
@@ -192,7 +188,6 @@ const Questions = () => {
 					<button onClick={
 						()=> {
 							setAnswers({ ...answers, forth: !answers.forth})
-							console.log(answers)
 						}
 					}
 									className='text-light-green md:ml-7 p-2 hover:text-dark-green'><IconContext.Provider
@@ -242,7 +237,6 @@ const Questions = () => {
 					<button onClick={
 						()=> {
 							setAnswers({ ...answers, fifth: !answers.fifth})
-							console.log(answers)
 						}
 					}
 									className='text-light-green md:ml-7 p-2 hover:text-dark-green'><IconContext.Provider

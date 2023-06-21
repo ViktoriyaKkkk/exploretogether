@@ -2,11 +2,8 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { useNavigate } from 'react-router-dom'
 import { useAppContext } from '../context/AppContext'
-
 import Layout from '../components/Layout'
-
 import DeleteModal from '../components/DeleteModal'
-
 import Sidebar from '../components/Sidebar'
 import UpdateMiddle from '../components/UpdateMiddle'
 import { createSections, deleteSections, updateSections } from '../api/api.section'

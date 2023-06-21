@@ -1,7 +1,6 @@
 import React from 'react';
 import {usePagination} from "../utils/usePagination";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md'
-import { Link } from 'react-router-dom'
 import { clsx } from 'clsx'
 
 export const Pagination = ({onPageChange, totalCount, siblingCount = 1, currentPage, pageSize, lastPage}) => {

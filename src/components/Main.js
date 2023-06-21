@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { observer } from 'mobx-react-lite'
-import { useAppContext } from '../context/AppContext'
 import { useTopics } from '../utils/useTopics'
 import { useSections } from '../utils/useSections'
 import { useLevels } from '../utils/useLevels'
@@ -12,34 +11,30 @@ import { useCities } from '../utils/useCities'
 import { useAges } from '../utils/useAges'
 import { createSearch } from '../api/api.search'
 import { useValidation } from '../utils/useValidation'
-import { readCities } from '../api/api.city'
 import { clsx } from 'clsx'
-import { useSearch } from '../utils/useSearch'
-import * as mobx from 'mobx'
-import { useLocation } from 'react-router-dom'
+import { Link} from 'react-router-dom'
 import Toast from './Toast'
 import { Toaster } from 'react-hot-toast'
+import Layout from './Layout'
 
 
 const Main = observer(() => {
-
-	const { userStore } = useAppContext()
 
 	const [searchName, setSearchName] = useState('')
 	const [nameErr, validateName] = useValidation(searchName, { isEmpty: true })
 	const [bluredName, setBluredName] = useState(false)
 
-	const [topics, errorTopic] = useTopics()
+	const [topics] = useTopics()
 	topics.sort((a, b) => {
-		return a.name.localeCompare(b.name); // по алфавиту (по возрастанию)
+		return a.name.localeCompare(b.name) // по алфавиту (по возрастанию)
 	})
 	const [selectedTopic, setSelectedTopic] = useState(0)
 	const [topicErr, validateTopic] = useValidation(selectedTopic, { isZero: true })
 	const [bluredTopic, setBluredTopic] = useState(false)
 
-	const [sections, errorSection] = useSections()
+	const [sections] = useSections()
 	sections.sort((a, b) => {
-		return a.name.localeCompare(b.name); // по алфавиту (по возрастанию)
+		return a.name.localeCompare(b.name) // по алфавиту (по возрастанию)
 	})
 	const bundlOfSections = useMemo(() => {
 		if (selectedTopic !== 0) {
@@ -53,7 +48,7 @@ const Main = observer(() => {
 	const [sectionErr, validateSection] = useValidation(selectedSection, { isZero: true })
 	const [bluredSection, setBluredSection] = useState(false)
 
-	const [levels, errorLevel] = useLevels()
+	const [levels] = useLevels()
 	const bundlOfLevels = useMemo(() => {
 		if (selectedSection !== 0) {
 			return levels.filter((level) => {
@@ -67,26 +62,26 @@ const Main = observer(() => {
 	const [bluredLevel, setBluredLevel] = useState(false)
 
 	const [selectedDuration, setSelectedDuration] = useState(0)
-	const [durations, errorDuration] = useDurations()
+	const [durations] = useDurations()
 	const [durationErr, validateDuration] = useValidation(selectedDuration, { isZero: true })
 	const [bluredDuration, setBluredDuration] = useState(false)
 
-	const [periodicities, errorPeriodicity] = usePeriodicities()
+	const [periodicities] = usePeriodicities()
 	const [selectedPeriodicity, setSelectedPeriodicity] = useState(0)
 	const [periodicityErr, validatePeriodicity] = useValidation(selectedPeriodicity, { isZero: true })
 	const [bluredPeriodicity, setBluredPeriodicity] = useState(false)
 
-	const [times, errorTime] = useTimes()
+	const [times] = useTimes()
 	const [selectedTime, setSelectedTime] = useState(0)
 	const [timeErr, validateTime] = useValidation(selectedTime, { isZero: true })
 	const [bluredTime, setBluredTime] = useState(false)
 
-	const [formats, errorFormat] = useFormats()
+	const [formats] = useFormats()
 	const [selectedFormat, setSelectedFormat] = useState(0)
 	const [formatErr, validateFormat] = useValidation(selectedFormat, { isZero: true })
 	const [bluredFormat, setBluredFormat] = useState(false)
 
-	const [cities, errorCity] = useCities()
+	const [cities] = useCities()
 	const citiesByName = useMemo(() => {
 		return cities?.reduce((prev, curr) => {
 			return { ...prev, [curr.name]: curr._id }
@@ -107,75 +102,37 @@ const Main = observer(() => {
 
 	const [selectedParticipantsGender, setSelectedParticipantsGender] = useState('')
 
-	const [ages, errorAge] = useAges()
+	const [ages] = useAges()
 	const [selectedAges, setSelectedAges] = useState(0)
 	const [ageErr, validateAge] = useValidation(selectedAges, { isZero: true })
 	const [bluredAge, setBluredAge] = useState(false)
 
 	const startSearch = () => {
 		let params = [searchName, selectedLevel, selectedDuration, selectedPeriodicity, selectedTime, selectedFormat, selectedAges, selectedCity, selectedNumberOfPeople]
-		// if (selectedCity!==0) {
-		// 	params = [...params, selectedCity]
-		// }
-		// if (selectedNumberOfPeople!=='') {
-		// 	params = [...params, selectedNumberOfPeople]
-		// }
 		if (selectedParticipantsGender === '') {
 			params = [...params, 'Любой']
 		} else {
 			params = [...params, selectedParticipantsGender]
 		}
-		// console.log(...params)
-		createSearch(...params).then((data) => Toast('ok','Внимание!', data))
-		// console.log(params)
+		createSearch(...params).then((data) => Toast('ok', 'Внимание!', data))
 	}
 
 	useMemo(() => {
 		if (Object.keys(citiesByName) !== 0 && localStorage.getItem('city') && selectedFormat === '641e114f2945eabd89d70189') {
 			setSelectedCity(citiesByName[localStorage.getItem('city')])
-			// console.log(citiesByName[localStorage.getItem('city')])
-			// console.log(selectedCity)
 		} else {
-			// console.log('name',citiesByName)
 		}
 	}, [citiesByName, selectedFormat])
 
-	const [searches, err, load] = useSearch()
-	const chats = useMemo(() => searches?.filter(search => {
-		let res = false
-		search.owner === userStore._user.id ? res = true : search.participants.forEach((item) => {
-			if (item === userStore._user.id) {
-				res = true
-			}
-		})
-		return res
-	}), [searches, userStore])
-
-	useEffect(()=>chats?.forEach((item)=>{
-		userStore.socket.emit('join_room', item._id)
-		console.log('joined ', item._id)
-	}),[chats,userStore])
-
-	const location = useLocation()
-	useEffect(() => {
-		userStore.socket.on('receive_message', (data) => {
-			userStore.setChat([...userStore.chat, data])
-
-			if (data.searchId !== location.pathname.split('/')[2]) {
-				userStore.setNotifications([...userStore.notifications, data])
-				console.log('zzzzzzzzzz', mobx.toJS(userStore.notifications))
-			}
-		})
-	}, [userStore.socket])
-
-	return (<>
-			<Toaster/>
-			<div className="absolute w-full -z-20 h-screen bg-black">
-			</div>
-			<div className="absolute w-full -z-10 h-screen [mask-image:linear-gradient(0deg,black,transparent)] bg-repeat bg-[url('../../public/img/bggrid2.svg')] ">
+	return (<Layout>
+			<Toaster />
+			<div className='absolute w-full -z-20 h-screen bg-black'>
 			</div>
 			<div
-				className="flex h-screen pt-12 flex-wrap align-middle overflow-y-scroll">
+				className="absolute w-full -z-10 h-screen [mask-image:linear-gradient(0deg,black,transparent)] bg-repeat bg-[url('../../public/img/bggrid2.svg')] ">
+			</div>
+			<div
+				className='flex h-screen pt-12 flex-wrap align-middle'>
 				<section className='max-w-4xl sm:w-fit w-2/3 self-center py-3 px-6 xl:p-6 my-5 md:my-auto mx-auto rounded-md shadow-md bg-black
 				drop-shadow-[0_0_25px_rgba(64,147,107,0.9)]'>
 					<h2 className='block text-center font-bold text-xl xl:text-2xl text-white'>Создание запроса на поиск
@@ -183,7 +140,9 @@ const Main = observer(() => {
 					<form>
 						<div className='grid grid-cols-1 gap-3 mt-4 sm:grid-cols-2'>
 							<div className='relative'>
-								<label className='block text-white after:content-["*"] after:absolute after:ml-0.5 after:text-light-green after:text-xl' htmlFor='username'>Название запроса</label>
+								<label
+									className='block text-white after:content-["*"] after:absolute after:ml-0.5 after:text-light-green after:text-xl'
+									htmlFor='username'>Название запроса</label>
 								<input value={searchName} onChange={e => setSearchName(e.target.value)}
 											 onBlur={e => {
 												 setBluredName(true)
@@ -200,7 +159,9 @@ const Main = observer(() => {
 							</div>
 
 							<div className='relative'>
-								<label className='block text-white after:content-["*"] after:absolute after:ml-0.5 after:text-light-green after:text-xl' htmlFor='passwordConfirmation'>Тематика</label>
+								<label
+									className='block text-white after:content-["*"] after:absolute after:ml-0.5 after:text-light-green after:text-xl'
+									htmlFor='passwordConfirmation'>Тематика</label>
 								<select value={selectedTopic} onChange={e => setSelectedTopic(e.target.value)}
 												onBlur={e => {
 													setBluredTopic(true)
@@ -222,8 +183,9 @@ const Main = observer(() => {
 							</div>
 
 							<div className='relative'>
-								<label className='block text-white after:content-["*"] after:absolute after:ml-0.5 after:text-light-green after:text-xl'
-											 htmlFor='passwordConfirmation'>Раздел</label>
+								<label
+									className='block text-white after:content-["*"] after:absolute after:ml-0.5 after:text-light-green after:text-xl'
+									htmlFor='passwordConfirmation'>Раздел</label>
 								<select disabled={!selectedTopic} value={selectedSection}
 												onChange={(e) => setSelectedSection(e.target.value)}
 												onBlur={e => {
@@ -246,7 +208,9 @@ const Main = observer(() => {
 							</div>
 
 							<div className='relative'>
-								<label className='block text-white after:content-["*"] after:absolute after:ml-0.5 after:text-light-green after:text-xl' htmlFor='passwordConfirmation'>Уровень</label>
+								<label
+									className='block text-white after:content-["*"] after:absolute after:ml-0.5 after:text-light-green after:text-xl'
+									htmlFor='passwordConfirmation'>Уровень</label>
 								<select disabled={!selectedSection} value={selectedLevel}
 												onChange={(e) => setSelectedLevel(e.target.value)}
 												onBlur={e => {
@@ -269,8 +233,9 @@ const Main = observer(() => {
 							</div>
 
 							<div className='relative'>
-								<label className='block text-white after:content-["*"] after:absolute after:ml-0.5 after:text-light-green after:text-xl'
-											 htmlFor='passwordConfirmation'>Длительность совместного
+								<label
+									className='block text-white after:content-["*"] after:absolute after:ml-0.5 after:text-light-green after:text-xl'
+									htmlFor='passwordConfirmation'>Длительность совместного
 									обучения</label>
 								<select value={selectedDuration} onChange={(e) => setSelectedDuration(e.target.value)}
 												onBlur={e => {
@@ -293,8 +258,9 @@ const Main = observer(() => {
 							</div>
 
 							<div className='relative'>
-								<label className='block text-white after:content-["*"] after:absolute after:ml-0.5 after:text-light-green after:text-xl'
-											 htmlFor='passwordConfirmation'>Частота встреч</label>
+								<label
+									className='block text-white after:content-["*"] after:absolute after:ml-0.5 after:text-light-green after:text-xl'
+									htmlFor='passwordConfirmation'>Частота встреч</label>
 								<select value={selectedPeriodicity} onChange={(e) => setSelectedPeriodicity(e.target.value)}
 												onBlur={e => {
 													setBluredPeriodicity(true)
@@ -311,13 +277,15 @@ const Main = observer(() => {
 									}
 								</select>
 								{
-									periodicityErr && bluredPeriodicity && <p className='absolute -bottom-5 text-red text-sm'>{periodicityErr}</p>
+									periodicityErr && bluredPeriodicity &&
+									<p className='absolute -bottom-5 text-red text-sm'>{periodicityErr}</p>
 								}
 							</div>
 
 							<div className='relative'>
-								<label className='block text-white after:content-["*"] after:absolute after:ml-0.5 after:text-light-green after:text-xl'
-											 htmlFor='passwordConfirmation'>Количество часов в
+								<label
+									className='block text-white after:content-["*"] after:absolute after:ml-0.5 after:text-light-green after:text-xl'
+									htmlFor='passwordConfirmation'>Количество часов в
 									день</label>
 								<select value={selectedTime} onChange={(e) => setSelectedTime(e.target.value)}
 												onBlur={e => {
@@ -340,8 +308,9 @@ const Main = observer(() => {
 							</div>
 
 							<div className='relative'>
-								<label className='block text-white after:content-["*"] after:absolute after:ml-0.5 after:text-light-green after:text-xl'
-											 htmlFor='passwordConfirmation'>Формат совместного
+								<label
+									className='block text-white after:content-["*"] after:absolute after:ml-0.5 after:text-light-green after:text-xl'
+									htmlFor='passwordConfirmation'>Формат совместного
 									обучения</label>
 								<select value={selectedFormat} onChange={(e) => setSelectedFormat(e.target.value)}
 												onBlur={e => {
@@ -420,8 +389,9 @@ const Main = observer(() => {
 							</div>
 
 							<div className='relative'>
-								<label className='block text-white after:content-["*"] after:absolute after:ml-0.5 after:text-light-green after:text-xl mr-5'
-											 htmlFor='passwordConfirmation'>Возрастной
+								<label
+									className='block text-white after:content-["*"] after:absolute after:ml-0.5 after:text-light-green after:text-xl mr-5'
+									htmlFor='passwordConfirmation'>Возрастной
 									диапазон участников</label>
 								<select value={selectedAges} onChange={(e) => setSelectedAges(e.target.value)}
 												onBlur={e => {
@@ -446,17 +416,19 @@ const Main = observer(() => {
 						</div>
 
 						<div className='flex justify-center mt-3 xl:mt-6'>
-							<button onClick={startSearch} type='button'
-											disabled={nameErr || topicErr || sectionErr || levelErr || durationErr
-												|| periodicityErr || timeErr || formatErr || (cityErr && selectedFormat === '641e114f2945eabd89d70189') || ageErr}
-											className='px-6 text-sm disabled:cursor-not-allowed uppercase py-2 leading-5 text-white transition-colors duration-200 transform bg-dark-green rounded-md
+							<Link to='/main'>
+								<button onClick={startSearch} type='button'
+												disabled={nameErr || topicErr || sectionErr || levelErr || durationErr
+													|| periodicityErr || timeErr || formatErr || (cityErr && selectedFormat === '641e114f2945eabd89d70189') || ageErr}
+												className='px-6 text-sm disabled:cursor-not-allowed uppercase py-2 leading-5 text-white transition-colors duration-200 transform bg-dark-green rounded-md
 							hover:bg-light-green focus:outline-none'>Начать поиск
-							</button>
+								</button>
+							</Link>
 						</div>
 					</form>
 				</section>
 			</div>
-		</>
+		</Layout>
 	)
 })
 

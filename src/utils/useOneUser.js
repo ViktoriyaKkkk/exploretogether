@@ -1,6 +1,5 @@
 import {useEffect, useState} from 'react';
-import { readAges } from '../api/api.age'
-import { readOneUser, readUsers } from '../api/api.user'
+import { readOneUser } from '../api/api.user'
 
 
 export const useOneUser= (id) => {

@@ -1,5 +1,4 @@
-import { $authHost, $host } from './api.interceptor'
-import jwtDecode from 'jwt-decode'
+import { $authHost } from './api.interceptor'
 
 export const readAges = async () => {
 	try {

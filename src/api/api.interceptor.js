@@ -1,4 +1,4 @@
-import axios, { AxiosError } from 'axios'
+import axios from 'axios'
 
 export const $host = axios.create({
 	baseURL: process.env.REACT_APP_SERVER_URL
@@ -31,14 +31,5 @@ $geoHost.interceptors.request.use(config => {
 	if (config.headers) {
 		config.headers.Authorization = `Token 205aaeff0691466641ec8372e2f678235c07e2eb`
 	}
-	console.log(config)
 	return config
 })
-
-// $errHost.interceptors.response.use(config =>{
-// 		if (config) {
-// 			config.headers.Acs = `*`
-// 		}
-// 	return config
-// }
-// 	)

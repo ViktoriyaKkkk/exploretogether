@@ -19,7 +19,6 @@ const UpdateUser = observer(({document, records, load, updateFunc}) => {
 	return (
 		<ModalLayout admin={true} func={()=> {
 			updateFunc(AdminInstance._isEditing, name, email,role, '', '', gender, socialNetwork, info).then(r=> {
-				console.log(r)
 				load()
 			})
 			AdminInstance.setIsEditing('')

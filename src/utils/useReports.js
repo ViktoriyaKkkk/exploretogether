@@ -1,7 +1,6 @@
 import {useEffect, useState} from 'react';
 import { readReports } from '../api/api.report'
 
-
 export const useReports= () => {
 	const [reports, setReports] = useState([])
 	const [error, setError] = useState(null)

@@ -1,7 +1,5 @@
 import {useEffect, useState} from 'react';
-import { readAges } from '../api/api.age'
 import { readUsers } from '../api/api.user'
-
 
 export const useUsers= () => {
 	const [users, setUsers] = useState([])

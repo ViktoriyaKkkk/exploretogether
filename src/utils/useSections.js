@@ -1,7 +1,6 @@
 import {useEffect, useState} from 'react';
 import { readSections } from '../api/api.section'
 
-
 export const useSections = () => {
 	const [sections, setSections] = useState([])
 	const [error, setError] = useState(null)

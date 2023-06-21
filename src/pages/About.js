@@ -7,7 +7,6 @@ import { Toaster } from 'react-hot-toast'
 
 const About = observer(() => {
 	const { userStore } = useAppContext()
-	console.log('user ', userStore.user)
 	return (
 		<Layout>
 			<Toaster/>
@@ -39,7 +38,7 @@ const About = observer(() => {
 								улучшением платформы, чтобы вы могли найти тех, кто вас дополнит и поможет реализовать ваши цели.
 							</p>
 							<div className="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
-								<Link to="/"
+								<Link to={userStore.isConnected === true ?`/main` : '/'}
 									 className="inline-flex justify-center items-center py-2 px-3 text-base font-medium text-center text-white rounded-lg
 									  transition-colors duration-200 transform bg-dark-green hover:bg-light-green focus:outline-none">
 									Искать партнёров

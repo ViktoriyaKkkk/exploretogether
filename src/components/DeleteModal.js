@@ -2,7 +2,6 @@ import React from 'react'
 import { observer } from 'mobx-react-lite'
 import { useAppContext } from '../context/AppContext'
 import ModalLayout from './ModalLayout'
-import { deleteAges, updateAges } from '../api/api.age'
 import { IconContext } from 'react-icons'
 import { IoClose } from 'react-icons/io5'
 
@@ -13,7 +12,6 @@ const DeleteModal = observer(({document, load, deleteFunc }) => {
 	return (
 		<ModalLayout admin={true} func={()=> {
 			deleteFunc(AdminInstance._isDeleting).then(r=> {
-				console.log(r)
 				load()
 			})
 			AdminInstance.setIsDeleting('')
